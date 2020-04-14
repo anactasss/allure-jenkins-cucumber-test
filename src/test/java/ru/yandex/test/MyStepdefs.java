@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MyStepdefs {
 
-    public WebDriver chromeDriver;
+public WebDriver chromeDriver;
 
     @Step
     public void открытьБраузер() {
@@ -64,6 +64,41 @@ public class MyStepdefs {
 
     @Then("закончить проверку поисковой выдачи Яндекса")
     public void закончитьПроверкуПоисковойВыдачиЯндекса() {
+        закрытьБраузер();
+    }
+
+    @Given("перейти на сайт Google '(.*)'")
+    public void перейтиНаСайтGoogle (String site) {
+        открытьБраузер();
+        chromeDriver.get(site);
+    }
+
+    @Then("найти в Google слово '(.*)'")
+    public void найтиВGoogleСлово (String word) {
+
+        WebElement searchField = chromeDriver.findElement(By.xpath("//input[@class=\'gLFyf gsfi\']"));
+
+        searchField.click();
+        searchField.sendKeys(word);
+        searchField.sendKeys(Keys.ENTER);
+    }
+
+    @Then("в выдаче Google есть ссылка на '(.*)'")
+    public void вВыдачеGoogleЕстьСсылкаНа (String siteToFind) {
+
+        List<WebElement> SearchResultOpen = chromeDriver.findElements(By.xpath("//div[@class=\"TbwUpd NJjxre\"]//cite"));
+
+        Boolean hasOpenLink = false;
+        for (WebElement webElement : SearchResultOpen) {
+            if (webElement.getText().equals(siteToFind)) {
+                hasOpenLink = true;
+            }
+        }
+        Assert.assertTrue(hasOpenLink);
+    }
+
+    @Then("закончить проверку поисковой выдачи Google")
+    public void закончитьПроверкуПоисковойВыдачиGoogle() {
         закрытьБраузер();
     }
 }
